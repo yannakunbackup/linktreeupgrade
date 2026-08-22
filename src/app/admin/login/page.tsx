@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { signInWithPopup } from 'firebase/auth';
+import { getAuthInstance, getGoogleProvider } from '@/lib/firebase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect } from 'react';
@@ -26,11 +26,11 @@ export default function AdminLogin() {
     setSigningIn(true);
     setError('');
     try {
-      const result = await signInWithPopup(auth, new GoogleAuthProvider());
+      const result = await signInWithPopup(getAuthInstance(), getGoogleProvider());
       const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || '')
         .split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
       if (!adminEmails.includes(result.user.email?.toLowerCase() || '')) {
-        await auth.signOut();
+        await getAuthInstance().signOut();
         setError('Akses ditolak. Email Anda tidak terdaftar sebagai admin.');
       }
     } catch (err: unknown) {
