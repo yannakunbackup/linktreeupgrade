@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { onSnapshot, query, collection, where, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { Product, ProductWithCategory, ProductCategory, COLLECTION_MAP, CATEGORY_LABELS } from '@/lib/firestore-types';
 import Link from 'next/link';
 import ThemeToggle from '@/components/theme-toggle';
@@ -35,7 +35,7 @@ export default function HomePage() {
     const unsubscribes = CATEGORIES.map((cat) => {
       const colName = COLLECTION_MAP[cat];
       const q = query(
-        collection(db, colName),
+        collection(getDb(), colName),
         where('isRecommended', '==', true),
         orderBy('createdAt', 'desc')
       );
