@@ -4,7 +4,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getAuthInstance } from '@/lib/firebase';
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   const { user, loading, isAdmin } = useAuth();
@@ -15,7 +15,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
     if (!user) {
       router.replace('/admin/login');
     } else if (!isAdmin) {
-      firebaseSignOut(auth).then(() => {
+      firebaseSignOut(getAuthInstance()).then(() => {
         router.replace('/admin/login?denied=1');
       });
     }

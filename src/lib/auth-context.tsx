@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from 'react';
 import { onAuthStateChanged, User, signOut as firebaseSignOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getAuthInstance } from '@/lib/firebase';
 
 interface AuthContextValue {
   user: User | null;
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(getAuthInstance(), (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
     });
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = !!user && adminEmails.includes(user.email?.toLowerCase() || '');
 
   const signOut = async () => {
-    await firebaseSignOut(auth);
+    await firebaseSignOut(getAuthInstance());
   };
 
   return (
