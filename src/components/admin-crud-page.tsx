@@ -5,7 +5,7 @@ import {
   collection, onSnapshot, query, orderBy,
   addDoc, updateDoc, deleteDoc, doc, Timestamp,
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { Product } from '@/lib/firestore-types';
 import AdminProductForm from '@/components/admin-product-form';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ export default function AdminCrudPage({ collectionName, title, subtitle }: Admin
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
 
   useEffect(() => {
-    const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
+    const q = query(collection(getDb(), collectionName), orderBy('createdAt', 'desc'));
     const unsub = onSnapshot(q, (snap) => {
       setProducts(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Product)));
       setLoading(false);
@@ -46,13 +46,13 @@ export default function AdminCrudPage({ collectionName, title, subtitle }: Admin
     isRecommended: boolean;
   }) {
     if (editProduct) {
-      await updateDoc(doc(db, collectionName, editProduct.id), {
+      await updateDoc(doc(getDb(), collectionName, editProduct.id), {
         ...data,
         updatedAt: Timestamp.now(),
       });
       showToast('Produk berhasil diperbarui.', true);
     } else {
-      await addDoc(collection(db, collectionName), {
+      await addDoc(collection(getDb(), collectionName), {
         ...data,
         createdAt: Timestamp.now(),
         updatedAt: Timestamp.now(),
@@ -66,7 +66,7 @@ export default function AdminCrudPage({ collectionName, title, subtitle }: Admin
   async function handleDelete() {
     if (!deleteTarget) return;
     try {
-      await deleteDoc(doc(db, collectionName, deleteTarget.id));
+      await deleteDoc(doc(getDb(), collectionName, deleteTarget.id));
       showToast('Produk berhasil dihapus.', true);
     } catch {
       showToast('Gagal menghapus produk.', false);
