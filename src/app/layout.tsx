@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono, Caveat } from "next/font/google";
 import "./globals.css";
-import dynamic from 'next/dynamic';
-
-const AuthProvider = dynamic(
-  () => import('@/lib/auth-context').then(mod => ({ default: mod.AuthProvider })),
-  { ssr: false }
-);
+import { AuthProvider } from '@/components/auth-provider-client';
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
