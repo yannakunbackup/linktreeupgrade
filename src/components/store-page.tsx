@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { onSnapshot, query, collection, orderBy, Timestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getDb } from '@/lib/firebase';
 import { Product } from '@/lib/firestore-types';
 import Link from 'next/link';
 import ThemeToggle from '@/components/theme-toggle';
@@ -25,7 +25,7 @@ export default function StorePage({ collectionName, title, subtitle }: StorePage
   }, [search]);
 
   useEffect(() => {
-    const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
+    const q = query(collection(getDb(), collectionName), orderBy('createdAt', 'desc'));
     const unsub = onSnapshot(q, (snap) => {
       const items = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Product));
       setProducts(items);
