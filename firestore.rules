@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Base Code Products
+    match /baseCodeProducts/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.admin == true
+        && isValidProduct(request.resource.data);
+    }
+
+    // Design Grafis Products
+    match /designGrafisProducts/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.admin == true
+        && isValidProduct(request.resource.data);
+    }
+
+    // Project & Preset Products
+    match /projectPresetProducts/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.admin == true
+        && isValidProduct(request.resource.data);
+    }
+  }
+}
+
+// Validation function
+function isValidProduct(data) {
+  return data.title is string
+    && data.title.size() >= 3
+    && data.description is string
+    && data.description.size() > 0
+    && data.link is string
+    && data.link.size() > 0
+    && data.tags is list
+    && data.isRecommended is bool
+    && data.createdAt is timestamp
+    && data.updatedAt is timestamp;
+}
