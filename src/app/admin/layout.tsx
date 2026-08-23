@@ -1,13 +1,10 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import AdminGuard from '@/lib/admin-guard';
 
-export const metadata = {
-  title: 'Admin — Mathaoduoyu',
-};
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AdminGuard>
-      {children}
-    </AdminGuard>
-  );
+  const pathname = usePathname();
+  if (pathname === '/admin/login') return <>{children}</>;
+  return <AdminGuard>{children}</AdminGuard>;
 }
